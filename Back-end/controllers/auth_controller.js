@@ -32,6 +32,8 @@ const register = async (req, res) => {
       user: userResponse,
     });
   } catch (error) {
+    console.log("server side error while registering:", error);
+
     return res.status(500).json({ message: "server error" });
   }
 };
@@ -75,6 +77,7 @@ const login = async (req, res) => {
 
     res.status(200).json({
       message: "user logged In successfully",
+      user
     });
   } catch (error) {
     return res.status(500).json({
@@ -90,4 +93,19 @@ const logOut = async (req, res) => {
   });
 };
 
-module.exports = { register, login, logOut };
+const getMe = async (req, res) => {
+  const userId = req.user._id;
+
+  const user = await userModel.findOne({ _id: userId });
+  if (!user) {
+    return res.status(404).json({
+      message: "user not found",
+    });
+  }
+  return res.status(200).json({
+    message: "user got successfully",
+    user,
+  });
+};
+
+module.exports = { register, login, logOut, getMe };

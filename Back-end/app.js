@@ -4,8 +4,15 @@ const authRouter = require("./routes/auth_routes");
 const sellerRouter = require("./routes/seller_routes");
 const buyerRouter = require("./routes/buyer_routes");
 const orderRouter = require("./routes/order_routes");
-
+const cors = require("cors");
+ 
 const app = express();
+app.use(
+  cors({
+    origin: "http://localhost:3001",
+    credentials: true,
+  }),
+);
 app.use(express.json());
 app.use(cookieParser());
 app.use(authRouter);
