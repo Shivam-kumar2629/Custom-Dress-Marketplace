@@ -1,15 +1,34 @@
+import axios from "axios";
+import { useEffect, useState } from "react";
+
 function Profile() {
+  const [user, setUser] = useState(null);
+  useEffect(() => {
+    const getUser = async () => {
+      try {
+        const res = await axios.get("http://localhost:3000/getme", {
+          withCredentials: true,
+        });
+        console.log(res.data);
+        setUser(res.data.user);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    getUser();
+  }, []);
+
   return (
     <div className="bg-slate-200 p-2">
       <div className="flex items-center justify-between text-start  text-2xl text-slate-700  md:text-3xl">
-        Shivam kumar{" "}
+        {user?.fullName}
         <div className=" text-xl text-center bg-zinc-400 rounded-xl p-1 md:text-2xl">
-          Buyer
+          {user?.role}
         </div>
       </div>
 
       <div className="text-slate-600 text-sm md:text-xl">
-        E-mail :- <span className="text-slate-600">shivam@shivam.com</span>
+        E-mail :- <span className="text-slate-600">{user?.email}</span>
       </div>
 
       <div className="flex justify-between items-center md:justify-around ">

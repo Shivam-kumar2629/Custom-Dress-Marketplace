@@ -1,5 +1,4 @@
-// // import Register from "./components/Auth/Register";
-import Home from "./components/Hero/Home";
+ import Home from "./components/Hero/Home";
 import Navbar from "./components/Header/Navbar";
 import Product from "./components/Hero/Product";
 import Profile from "./components/Hero/Profile";
@@ -34,7 +33,7 @@ function App() {
   if (user) {
     return (
       <>
-        <Navbar />
+        <Navbar setUser={setUser} />
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/products" element={<Product />} />
