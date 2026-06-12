@@ -3,8 +3,10 @@ import axios from "axios";
 import { Navigate, useNavigate } from "react-router-dom";
 
 function Login({ setUser }) {
+  const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
@@ -18,19 +20,18 @@ function Login({ setUser }) {
           withCredentials: true,
         },
       );
-      
+
       if (res.status === 200) {
         setUser(res.data.user);
+        navigate("/");
       }
-    
-      
 
       console.log(res.data);
     } catch (error) {
       console.log(error);
     }
   };
-  const navigate = useNavigate();
+
   const redirectRegister = () => {
     navigate("/register");
   };

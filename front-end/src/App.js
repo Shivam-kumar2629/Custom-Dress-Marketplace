@@ -1,4 +1,4 @@
- import Home from "./components/Hero/Home";
+import Home from "./components/Hero/Home";
 import Navbar from "./components/Header/Navbar";
 import Product from "./components/Hero/Product";
 import Profile from "./components/Hero/Profile";
@@ -23,7 +23,37 @@ function App() {
         });
         setUser(res.data.user);
       } catch (error) {
-        setUser(null);
+        console.log("getme failed error:", error.response?.status, error);
+
+        if (error.response?.status === 401) {
+          try {
+             await axios.get(
+              "http://localhost:3000/refreshToken",
+              {
+                withCredentials: true,
+              },
+            );
+          } catch (error) {
+            console.log(
+              "error while generating new accessToken:",
+              error.response?.status,
+              error,
+            );
+          }
+          try {
+            const res = await axios.get("http://localhost:3000/getme", {
+              withCredentials: true,
+            });
+            setUser(res.data.user);
+          } catch (error) {
+            console.log(
+              "error while second getme:",
+              error.response?.status,
+              error,
+            );
+          }
+          
+        }
       }
     };
 
@@ -38,7 +68,7 @@ function App() {
           <Route path="/" element={<Home />} />
           <Route path="/products" element={<Product />} />
           <Route path="/about" element={<About />} />
-          <Route path="/profile" element={<Profile />} />
+          <Route path="/profile" element={<Profile user={user} />} />
         </Routes>
       </>
     );
@@ -49,7 +79,7 @@ function App() {
         <Login setUser={setUser} />
         <Routes>
           <Route path="/login" element={<Login setUser={setUser} />} />
-          <Route path="/register" element={<Register  />} />
+          <Route path="/register" element={<Register />} />
         </Routes>
       </>
     );

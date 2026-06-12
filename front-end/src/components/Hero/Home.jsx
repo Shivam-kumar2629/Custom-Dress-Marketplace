@@ -3,7 +3,7 @@
 function Home() {
   return (
     <>
-       <div>hii this is home</div>
+       <div className="mt-10 md:mt-14">hii this is home</div>
       
     </>
   )

@@ -19,7 +19,7 @@ const authorization = async (req, res, next) => {
     req.userId = verifiedAccessToken.id;
     const user = await userModel.findById(req.userId);
     if (!user) {
-      return res.status(401).json({ message: "user not found" });
+      return res.status(404).json({ message: "user not found" });
     }
     req.user = user;
 

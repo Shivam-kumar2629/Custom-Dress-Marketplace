@@ -77,7 +77,7 @@ const login = async (req, res) => {
 
     res.status(200).json({
       message: "user logged In successfully",
-      user
+      user,
     });
   } catch (error) {
     return res.status(500).json({
@@ -108,4 +108,38 @@ const getMe = async (req, res) => {
   });
 };
 
-module.exports = { register, login, logOut, getMe };
+const refreshToken = async (req, res) => {
+  try {
+    const refreshToken = req.cookies.refreshToken;
+    if (!refreshToken) {
+      return res.status(404).json({ message: "refresh token not found" });
+    }
+    const verifiedRefreshToken = jwt.verify(
+      refreshToken,
+      process.env.REFRESH_JWT_SECRET,
+    );
+    req.userId = verifiedRefreshToken.id;
+    const user = await userModel.findOne({ _id: req.userId });
+    if (!user) {
+      return res.status(404).json({ message: "User  not found" });
+    }
+    if (user.refreshToken !== refreshToken) {
+      return res.status(401).json({ message: "unauthorized" });
+    }
+
+    const newAccessToken = jwt.sign(
+      { id: user._id },
+      process.env.ACCESS_JWT_SECRET,
+      { expiresIn: "15m" },
+    );
+    res.cookie("accessToken", newAccessToken);
+
+    return res.status(200).json({
+      message: "new accessToken generated.",
+    });
+  } catch (error) {
+    console.log("error while generting new accessToken:", error);
+  }
+};
+
+module.exports = { register, login, logOut, getMe, refreshToken };

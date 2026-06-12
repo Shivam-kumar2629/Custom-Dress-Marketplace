@@ -32,8 +32,8 @@ function Navbar({setUser}) {
     }
   };
   return (
-    <>
-      <div className="h-10 w-full gap-1 bg-purple-200 flex items-center relative md:h-14 justify-between   text-xl">
+    <div  >
+      <div className="h-10 w-full gap-1 bg-purple-200 flex items-center   md:h-14 justify-between text-xl fixed top-0 left-0   z-50 ">
         <button onClick={togglemenu} className="text-3xl ml-2 md:hidden">
           {isMenuOpen ? <IoClose /> : <IoMenu />}
         </button>
@@ -68,7 +68,7 @@ function Navbar({setUser}) {
         </button>
         <button
           onClick={logOut}
-          className="hidden md:block text-3xl ml-3 text-4xl mr-5"
+          className="hidden md:block text-3xl ml-3 md:text-4xl mr-5"
         >
           <IoLogOut />
         </button>
@@ -93,7 +93,7 @@ function Navbar({setUser}) {
           </div>
         )}
       </div>
-    </>
+    </div>
   );
 }
 

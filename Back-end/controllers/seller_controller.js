@@ -11,16 +11,20 @@ const add_dress = async (req, res) => {
   }
   const sellerId = User._id;
 
-  if (!title || !price || !category || !req.file) {
+  if (!title || !price || !category || !req.files || req.files.length === 0) {
     return res.status(400).json({ message: "fields must have valid inputs" });
   }
   try {
-    console.log(req.file);
+    const imageUrls = [];
 
-    const result = await cloudinary.uploader.upload(req.file.path);
-
-    if (req.file) {
-      fs.unlinkSync(req.file.path);
+    for (const file of req.files) {
+      const result = await cloudinary.uploader.upload(file.path);
+      imageUrls.push(result.secure_url);
+    }
+    if (req.files) {
+      req.files.forEach((file) => {
+        fs.unlinkSync(file.path);
+      });
     }
 
     const dress = await dressModel.create({
@@ -28,16 +32,21 @@ const add_dress = async (req, res) => {
       price,
       description,
       category,
-      images: result.secure_url,
+      images: imageUrls,
       sellerId,
     });
     res.status(201).json({
       message: "dress created successfully",
       dress,
     });
+    
   } catch (error) {
-    if (req.file) {
-      fs.unlinkSync(req.file.path);
+    if (req.files) {
+      req.files.forEach((file) => {
+        if (fs.existsSync(file.path)) {
+          fs.unlinkSync(file.path);
+        }
+      });
     }
     console.log("add_dress error:", error);
     return res.status(500).json({ message: "server side error" });
@@ -70,6 +79,22 @@ const get_single_dress = async (req, res) => {
     console.log("error in get-single-dress controller : ", error);
     return res.status(500).json({ message: "server side error" });
   }
+};
+
+const getMyDress = async (req, res) => {
+  const sellerId = req.user._id;
+  const dresess = await dressModel.find({
+    sellerId: sellerId,
+  });
+  if (dresess.length === 0) {
+    return res
+      .status(404)
+      .json({ message: "NO dress found for this specific seller" });
+  }
+  return res.status(200).json({
+    message: "all dresess fetched successfully",
+    dresess,
+  });
 };
 
 const update_dress = async (req, res) => {
@@ -185,4 +210,5 @@ module.exports = {
   delete_dress,
   fetchRequest,
   submitProposal,
+  getMyDress,
 };
