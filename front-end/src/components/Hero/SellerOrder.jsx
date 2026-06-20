@@ -1,0 +1,33 @@
+import { useEffect, useState } from "react";
+import axios from "axios";
+
+function SellerOrder() {
+  const [orders, setOrders] = useState([]);
+  useEffect(() => {
+    const fetchOrders = async () => {
+      const res = await axios.get("http://localhost:3000/order/seller-orders", {
+        withCredentials: true,
+      });
+      console.log(res.data.orders);
+      setOrders(res.data.orders);
+    };
+    fetchOrders();
+  }, []);
+  return (
+    <div className="mt-10 md:mt-20 relative flex flex-col overflow-y-scroll scrollbar-none gap-2 mb-14">
+      {orders.map((order) => {
+        return (
+          <div key={order._id} className="bg-orange-200 ">
+            <div>Dress Name:      -{order?.dressId} </div>
+            <div>Order Date:      -{new Date(order?.createdAt).toLocaleString("en-In")} </div>
+            <div>Order Price:      -{order?.price} </div>
+            <div>Order Type:      -{order?.orderType} </div>
+            <div>Status:      -{order?.status} </div>
+          </div>
+        );
+      })}
+    </div>
+  );
+}
+
+export default SellerOrder;

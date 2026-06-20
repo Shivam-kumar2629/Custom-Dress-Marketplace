@@ -143,9 +143,10 @@ const fetchRequest = async (req, res) => {
   try {
     const requests = await requestModel.find({
       status: "open",
-    });
+    }).sort({createdAt:-1})
     if (requests.length === 0) {
-      return res.status(404).json({ message: "No requests exist" });
+      return res.status(200).json({ message: "No requests exist",requests:[]
+       });
     }
 
     return res.status(200).json({

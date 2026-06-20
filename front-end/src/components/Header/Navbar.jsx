@@ -74,7 +74,7 @@ function Navbar({setUser}) {
         </button>
 
         {isMenuOpen && (
-          <div className=" bg-purple-100 h-56 w-36 absolute top-10 left-0 border-1 rounded-r-lg border-purple-300 flex flex-col items-start justify-start gap-2 p-2 md:hidden ">
+          <div className=" bg-purple-100 h-56 w-36 absolute top-10 left-0 border-1 rounded-r-lg border-purple-300 flex flex-col items-start justify-start gap-2 p-2 md:hidden z-50 ">
             <Link onClick={menuFalse} to="/" className="block p-3">
               Home
             </Link>

@@ -1,7 +1,7 @@
 const requestModel = require("../models/request_model");
 
 const request = async (req, res) => {
-  const { budget, description, deadline } = req.body;
+  const { budget , description, deadline } = req.body;
   const buyerId = req.user._id;
   if (!budget || !description || !deadline || !buyerId) {
     return res.status(400).json({ message: "all fields are required" });
@@ -29,9 +29,9 @@ const request = async (req, res) => {
 const getRequest = async (req, res) => {
   try {
     const buyerId = req.user._id;
-    const request = await requestModel.find({ buyerId });
+    const request = await requestModel.find({ buyerId }).sort({createdAt:-1});
     if (request.length === 0) {
-      return res.status(400).json({ message: "request not found" });
+      return res.status(200).json({ message: "request not found",request:[] });
     }
     return res.status(200).json({
       message: "request fetched successfully",

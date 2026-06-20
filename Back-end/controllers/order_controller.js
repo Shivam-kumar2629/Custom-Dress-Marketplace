@@ -101,15 +101,30 @@ const order = async (req, res) => {
 const myOrders = async (req, res) => {
   try {
     const buyerId = req.user._id;
-    const orders = await orderModel.find({
-      buyerId,
-    });
-    if (orders.length === 0) {
-      return res.status(400).json({ message: "no orders yet" });
+    const orders = await orderModel
+      .find({
+        buyerId,
+      })
+      .sort({ createdAt: -1 });
+
+    for (let order of orders) {
+      const dress = await dressModel.findById(order.dressId);
+
+      if (!dress) {
+        await orderModel.findByIdAndDelete(order._id);
+      }
+    }
+
+    const updatedOrders = await orderModel
+      .find({ buyerId })
+      .sort({ createdAt: -1 });
+
+    if (updatedOrders.length === 0) {
+      return res.status(200).json({ message: "no orders yet", orders: updatedOrders, });
     }
     return res.status(200).json({
       message: "order fetched successfully",
-      orders,
+      orders:updatedOrders,
     });
   } catch (error) {
     console.log("error while getting orders :", error);
@@ -122,10 +137,13 @@ const myOrders = async (req, res) => {
 const sellerOrders = async (req, res) => {
   try {
     const sellerId = req.user._id;
-    const orders = await orderModel.find({ sellerId: sellerId });
+    const orders = await orderModel
+      .find({ sellerId: sellerId })
+      .sort({ createdAt: -1 });
     if (orders.length === 0) {
-      return res.status(400).json({
+      return res.status(200).json({
         message: "no orders found",
+        order: [],
       });
     }
     return res.status(200).json({

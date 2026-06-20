@@ -9,7 +9,7 @@ const requestSchema = new schema(
       required: true,
     },
     budget: {
-      type: Number,
+      type: String,
       required: true,
     },
     description: {
@@ -33,14 +33,14 @@ const requestSchema = new schema(
         status: {
           type: String,
           enum: ["accepted", "rejected", "pending"],
-          default: "pending"
+          default: "pending",
         },
       },
     ],
     status: {
       type: String,
       enum: ["open", "closed"],
-      default: "open"
+      default: "open",
     },
   },
   { timestamps: true },

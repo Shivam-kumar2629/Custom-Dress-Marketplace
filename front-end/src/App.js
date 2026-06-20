@@ -5,12 +5,14 @@ import Profile from "./components/Hero/Profile";
 import About from "./components/Hero/About";
 import Register from "./components/Auth/Register";
 import Login from "./components/Auth/Login";
-
+import Footer from "./components/Footer/Footer";
+import Order from "./components/Hero/Order";
+import Myorder from "./components/Hero/Myorder";
+import Cutomise from "./components/Hero/Cutomise";
 import axios from "axios";
-
 import { useEffect, useState } from "react";
-
 import { Routes, Route } from "react-router-dom";
+import SellerOrder from "./components/Hero/SellerOrder";
 
 function App() {
   const [user, setUser] = useState(null);
@@ -27,12 +29,9 @@ function App() {
 
         if (error.response?.status === 401) {
           try {
-             await axios.get(
-              "http://localhost:3000/refreshToken",
-              {
-                withCredentials: true,
-              },
-            );
+            await axios.get("http://localhost:3000/refreshToken", {
+              withCredentials: true,
+            });
           } catch (error) {
             console.log(
               "error while generating new accessToken:",
@@ -52,7 +51,6 @@ function App() {
               error,
             );
           }
-          
         }
       }
     };
@@ -64,12 +62,18 @@ function App() {
     return (
       <>
         <Navbar setUser={setUser} />
+
         <Routes>
           <Route path="/" element={<Home />} />
-          <Route path="/products" element={<Product />} />
+          <Route path="/products" element={<Product user={user} />} />
           <Route path="/about" element={<About />} />
           <Route path="/profile" element={<Profile user={user} />} />
+          <Route path="/order/:id" element={<Order />} />
+          <Route path="/myorder" element={<Myorder />} />
+          <Route path="/customisorder" element={<Cutomise />} />
+          <Route path="/sellerorder" element={<SellerOrder />} />
         </Routes>
+        <Footer user={user} />
       </>
     );
   }
