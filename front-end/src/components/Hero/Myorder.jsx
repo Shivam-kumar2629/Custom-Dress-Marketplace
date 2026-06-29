@@ -14,10 +14,18 @@ function Myorder() {
       const res = await axios.get(`http://localhost:3000/order/my-orders`, {
         withCredentials: true,
       });
-      console.log(res.data)
+      console.log(res.data);
       const finalData = [];
 
       for (let order of res.data.orders) {
+        if (order.orderType === "customise") {
+          finalData.push({
+            order,
+            dress: null,
+          });
+          continue;
+        }
+
         try {
           const dressData = await axios.get(
             `http://localhost:3000/dresses/${order.dressId}`,
@@ -61,32 +69,34 @@ function Myorder() {
         ordersWithDress.map((item) => {
           return (
             <div
-              key={item._id}
+              key={item.order._id}
               className="h-20 md:h-32 bg-blue-100  w-full flex items-center justify-evenly md:justify-around"
             >
-              <img
-                className="h-20 md:h-32 w-20 md:w-32"
-                src={
-                  item.dress ? (
-                    item.dress.images[0]
-                  ) : (
-                    <div>Dress Removed By Seller</div>
-                  )
-                }
-              />
+              {item.order.orderType === "customise" ? (
+                <div className="h-20 md:h-32 w-20 md:w-32 flex items-center justify-center bg-gray-200">
+                  Custom Order
+                </div>
+              ) : (
+                <img
+                  className="h-20 md:h-32 w-20 md:w-32"
+                  src={item.dress?.images[0]}
+                />
+              )}
 
               <div className="max-w-20 md:max-w-32 pl-1 overflow-x-scroll scrollbar-none md:text-3xl">
-                {item.dress ? (
-                  <div>{item.dress.title}</div>
+                {item.order.orderType === "customise" ? (
+                  <div className="overflow-x-scroll scrollbar-none max-h-5 md:max-h-10 md:w-80  w-40"> timeline:{item.order.timeline}</div>
                 ) : (
-                  <div>Dress Removed By Seller</div>
+                  <div>{item.dress?.title}</div>
                 )}
               </div>
 
-              <div className="flex flex-col items-end justify-evenly md:gap-10">
+              <div className="flex flex-col items-end justify-evenly md:gap-8">
                 <button className="bg-orange-100 p-1 rounded-md md:text-xl max-h-16 max-w-30">
                   pay now: $
-                  {item.dress ? <div>{item.dress.price}</div> : <div>Null</div>}
+                  {item.order.orderType === "customise"
+                    ? item.order.price
+                    : item.dress?.price}
                 </button>
                 <div className="text-sm md:text-lg">
                   <span>Order Placed :</span>

@@ -29,7 +29,7 @@ function Product({ user }) {
   return (
     <div className="relative">
       <div className="absolute top-10 p-2 text-slate-600 text-xl md:top-14 md:p-5 md:text-3xl ">
-        Hii <span className="text-2xl md:text-5xl italic"> Shivam </span> Enjoy
+        Hii <span className="text-2xl md:text-5xl italic">{user.fullName} </span> Enjoy
         Shopping
       </div>
 
@@ -106,7 +106,7 @@ function Product({ user }) {
       {user.role === "buyer" && (
         <button
           onClick={() => navigate("/customisorder")}
-          className="fixed  top-80  right-2   z-40 bg-orange-400 w-36 h-10 rounded-md border-1   "
+          className="fixed  top-80 md:top-20  right-2   z-40 bg-orange-400 w-36 h-10 rounded-md border-1   "
         >
           Order Custom Dress
         </button>

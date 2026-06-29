@@ -55,6 +55,13 @@ const customiseOrder = async (req, res) => {
       orderType: "customise",
       status: "pending",
     });
+
+    request.proposals = request.proposals.filter(
+      (proposal) => proposal._id.toString() !== proposalId,
+    );
+
+    await request.save();
+
     return res.status(201).json({
       message: "order created successfully",
       order: newOrder,
@@ -108,23 +115,29 @@ const myOrders = async (req, res) => {
       .sort({ createdAt: -1 });
 
     for (let order of orders) {
+      if (order.orderType !== "normal") {
+        continue;
+      }
+
       const dress = await dressModel.findById(order.dressId);
 
       if (!dress) {
         await orderModel.findByIdAndDelete(order._id);
       }
     }
-
     const updatedOrders = await orderModel
       .find({ buyerId })
       .sort({ createdAt: -1 });
 
     if (updatedOrders.length === 0) {
-      return res.status(200).json({ message: "no orders yet", orders: updatedOrders, });
+      return res
+        .status(200)
+        .json({ message: "no orders yet", orders: updatedOrders });
     }
+
     return res.status(200).json({
       message: "order fetched successfully",
-      orders:updatedOrders,
+      orders: updatedOrders,
     });
   } catch (error) {
     console.log("error while getting orders :", error);

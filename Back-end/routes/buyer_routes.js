@@ -6,6 +6,8 @@ const {
   request,
   getRequest,
   acceptProposal,
+  deleteProposal,
+  fetchProposals
 } = require("../controllers/buyer_controller");
 
 router
@@ -13,8 +15,18 @@ router
   .post(authorization, allowedRole(["buyer"]), request)
   .get(authorization, allowedRole(["buyer"]), getRequest);
 
+  router
+  .route("/fetchingproposal")
+  .get(authorization, allowedRole(["buyer"]), fetchProposals)
+
+  router
+  .route("/proposal/:proposalId/:requestId")
+  .delete(authorization, allowedRole(["buyer"]), deleteProposal)
+
 router
   .route("/acceptProposal/:requestId/:proposalId")
   .post(authorization, allowedRole(["buyer"]), acceptProposal);
+
+  
 
 module.exports = router;

@@ -39,7 +39,6 @@ const add_dress = async (req, res) => {
       message: "dress created successfully",
       dress,
     });
-    
   } catch (error) {
     if (req.files) {
       req.files.forEach((file) => {
@@ -141,18 +140,33 @@ const delete_dress = async (req, res) => {
 
 const fetchRequest = async (req, res) => {
   try {
-    const requests = await requestModel.find({
-      status: "open",
-    }).sort({createdAt:-1})
+    const requests = await requestModel
+      .find({
+        status: "open",
+      })
+      .sort({ createdAt: -1 });
     if (requests.length === 0) {
-      return res.status(200).json({ message: "No requests exist",requests:[]
-       });
+      return res
+        .status(200)
+        .json({ message: "No requests exist", requests: [] });
     }
+
+    const updatedRequests = requests.map((item) => {
+      const alreadySubmitted = item.proposals.some(
+        (proposal) => proposal.sellerId.toString() === req.user._id.toString(),
+      );
+
+      return {
+        ...item.toObject(),
+        alreadySubmitted,
+      };
+    });
 
     return res.status(200).json({
       message: "Requests fetched successfully",
-      requests,
+      requests: updatedRequests,
     });
+    
   } catch (error) {
     console.log("error while fetching request :", error);
     return res.status(500).json({

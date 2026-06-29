@@ -2,8 +2,11 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import test from "../assets/test.jpg";
 import { FaRegWindowClose } from "react-icons/fa";
+import {useNavigate} from "react-router-dom"
 
 function Profile({ user }) {
+  const navigate=useNavigate();
+
   const [dressdata, setDressData] = useState([]);
   const [formState, setformState] = useState(false);
   const [getsinglestate, setGetSingleState] = useState(false);
@@ -16,6 +19,14 @@ function Profile({ user }) {
   const [requestbox, setRequestBox] = useState(false);
   const [fetchedrequests, setFetchedRequests] = useState([]);
   const [proposalformstate, setProposalFormState] = useState(false);
+  const [proposalamount, setProposalAmount] = useState("");
+  const [proposaldeadline, setProposalDeadline] = useState("");
+  const [proposalmessage, setProposalMessage] = useState("");
+  const [selectedrequestid, setSelectedRequestId] = useState(null);
+  const [submitproposal, setSubmitProposal] = useState([]);
+  const [fetchproposalstate, setFetchProposalState] = useState(false);
+  const [proposaldata, setProposalData] = useState([]);
+  const [deleting, setDeleting] = useState(false);
 
   useEffect(() => {
     const fetchDress = async () => {
@@ -99,12 +110,78 @@ function Profile({ user }) {
       setFetchedRequests(res.data.requests);
     }
   };
- 
-  const proposalSend=async (e)=>{
-    e.preventDefault();
-    const formdata=new FormData();
 
-  }
+  const proposalSend = async (e) => {
+    e.preventDefault();
+    if (!proposalamount || !proposaldeadline || !proposalmessage) {
+      return alert("ALL FIELDS MUST HAVE INPUTS");
+    }
+
+    const res = await axios.post(
+      `http://localhost:3000/proposal/${selectedrequestid}`,
+      {
+        price: proposalamount,
+        timeline: proposaldeadline,
+        message: proposalmessage,
+      },
+      { withCredentials: true },
+    );
+    console.log(res.data.request.proposals);
+    setSubmitProposal(res.data.request.proposals);
+    setProposalAmount("");
+    setProposalDeadline("");
+    setProposalMessage("");
+    setProposalFormState(false);
+  };
+  const openproposalbox = async () => {
+    const res = await axios.get(`http://localhost:3000/fetchingproposal`, {
+      withCredentials: true,
+    });
+
+    setProposalData(res.data.proposals);
+  };
+
+  const deleteProposal = async (requestId, proposalId) => {
+    if (deleting) return;
+
+    setDeleting(true);
+
+    try {
+      const res = await axios.delete(
+        `http://localhost:3000/proposal/${proposalId}/${requestId}`,
+        { withCredentials: true },
+      );
+
+      if (res.status === 200) {
+        openproposalbox();
+      }
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setDeleting(false);
+    }
+  };
+
+  const createAutoCustomiseOrder = async (requestId, proposalId) => {
+    try {
+      await axios.post(
+        `http://localhost:3000/acceptProposal/${requestId}/${proposalId}`,
+        {},
+        { withCredentials: true },
+      );
+
+      await axios.post(
+        `http://localhost:3000/order/${requestId}/${proposalId}`,
+        {},
+        { withCredentials: true },
+      );
+
+      navigate("/myorder");
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
   if (!user) {
     return (
       <div className="mt-10">
@@ -144,9 +221,17 @@ function Profile({ user }) {
             </div>
           )}
 
-          <div className="bg-red-100 rounded-lg border-2  border-slate-700 text-slate-700 mt-2 md:h-10 md:w-36 md:text-center md:text-2xl cursor-pointer ">
-            Proposals
-          </div>
+          {user.role === "buyer" && (
+            <button
+              onClick={() => {
+                setFetchProposalState(true);
+                openproposalbox();
+              }}
+              className="bg-red-100 rounded-lg border-2  border-slate-700 text-slate-700 mt-2 md:h-10 md:w-36 md:text-center md:text-2xl cursor-pointer "
+            >
+              Proposals
+            </button>
+          )}
         </div>
       </div>
 
@@ -324,7 +409,9 @@ function Profile({ user }) {
           </div>
 
           <button
-            onClick={() => setRequestBox(false)}
+            onClick={() => {
+              setRequestBox(false);
+            }}
             className="bg-red-200 px-2 rounded-md md:px-10 md:text-xl"
           >
             close
@@ -343,7 +430,7 @@ function Profile({ user }) {
                 >
                   <div className="flex justify-around">
                     <div className="w-16 md:w-24 overflow-x-scroll scrollbar-none md:text-lg">
-                      {item?.budget}
+                      $ {item?.budget}
                     </div>
 
                     <div>
@@ -355,15 +442,22 @@ function Profile({ user }) {
                     {item?.description}
                   </div>
                   <div className="flex justify-center mt-1">
-                    <button
-                      onClick={() => {
-                        setProposalFormState(true);
-                        setRequestBox(false);
-                      }}
-                      className="bg-white rounded-md p-1 cursor-pointer"
-                    >
-                      Send proposal
-                    </button>
+                    {item.alreadySubmitted ? (
+                      <div className="bg-gray-300 rounded-md p-1">
+                        Proposal Sent
+                      </div>
+                    ) : (
+                      <button
+                        onClick={() => {
+                          setSelectedRequestId(item._id);
+                          setProposalFormState(true);
+                          setRequestBox(false);
+                        }}
+                        className="bg-green-300 rounded-md p-1 cursor-pointer"
+                      >
+                        Send Proposal
+                      </button>
+                    )}
                   </div>
                 </div>
               );
@@ -382,24 +476,86 @@ function Profile({ user }) {
       {proposalformstate && (
         <div className="   z-50 h-[250px] w-60 md:h-96 md:w-80 bg-blue-300 absolute flex flex-col items-center top-28   left-1/2 -translate-x-1/2 ">
           <form className="h-full  bg-blue-400 w-full flex flex-col gap-2 items-center justify-evenly p-1 ">
-            <input   
+            <input
+              value={proposalamount}
+              onChange={(e) => setProposalAmount(e.target.value)}
               className="w-full md:h-10"
-              type="text"
+              type="number"
               placeholder="Enter final amount"
             />
-            <input   
+            <input
+              value={proposaldeadline}
+              onChange={(e) => setProposalDeadline(e.target.value)}
               className="w-full md:h-10"
-              type="text"
+              type="date"
               placeholder="Enter your final deadline"
             />
-            <input    className="w-full md:h-10" type="text" placeholder="Enter message" />
-            <button onClick={proposalSend} className="bg-green-300 p-2 rounded-md md:p-2 md:text-xl">
+            <input
+              value={proposalmessage}
+              onChange={(e) => setProposalMessage(e.target.value)}
+              className="w-full md:h-10"
+              type="text"
+              placeholder="Enter message with dress detail "
+            />
+            <button
+              onClick={proposalSend}
+              className="bg-green-300 p-2 rounded-md md:p-2 md:text-xl"
+            >
               Send proposal
             </button>
           </form>
           <button
             onClick={() => setProposalFormState(false)}
             className="bg-red-300 rounded-md p-1 md:p-2 md:text-xl"
+          >
+            close
+          </button>
+        </div>
+      )}
+
+      {fetchproposalstate && (
+        <div className="relative">
+          {" "}
+          <div className="   z-50 h-[250px] w-60 md:h-80 md:w-80 bg-blue-200 absolute flex flex-col items-center top-28   left-1/2 -translate-x-1/2 rounded-md p-1 overflow-y-scroll scrollbar-none">
+            {proposaldata.map((item) => {
+              return (
+                <div
+                  key={item._id}
+                  className="flex flex-col bg-red-100 p-1 mt-1 w-full"
+                >
+                  <div className="flex items-center justify-between">
+                    <div>{item?.price}</div>
+                    <div>{item?.timeline}</div>
+                  </div>
+                  <div className="overflow-x-scroll scrollbar-none m-1">
+                    {item?.message}
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <button
+                      onClick={() => {
+                        createAutoCustomiseOrder(item.requestId, item._id);
+                      }}
+                      className="bg-green-300 rounded-md p-1"
+                    >
+                      Accept{" "}
+                    </button>
+                    <button
+                      disabled={deleting}
+                      onClick={() => {
+                        deleteProposal(item.requestId, item._id);
+                      }}
+                      className="bg-red-500 rounded-md p-1"
+                    >
+                      Delete
+                    </button>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+          <button
+            onClick={() => setFetchProposalState(false)}
+            className="bg-red-300 rounded-md p-1 md:p-2 md:text-xl fixed z-50 top-[360px] md:top-[430px] left-1/2 -translate-x-1/2"
           >
             close
           </button>

@@ -1,7 +1,7 @@
 const requestModel = require("../models/request_model");
 
 const request = async (req, res) => {
-  const { budget , description, deadline } = req.body;
+  const { budget, description, deadline } = req.body;
   const buyerId = req.user._id;
   if (!budget || !description || !deadline || !buyerId) {
     return res.status(400).json({ message: "all fields are required" });
@@ -29,9 +29,13 @@ const request = async (req, res) => {
 const getRequest = async (req, res) => {
   try {
     const buyerId = req.user._id;
-    const request = await requestModel.find({ buyerId }).sort({createdAt:-1});
+    const request = await requestModel
+      .find({ buyerId })
+      .sort({ createdAt: -1 });
     if (request.length === 0) {
-      return res.status(200).json({ message: "request not found",request:[] });
+      return res
+        .status(200)
+        .json({ message: "request not found", request: [] });
     }
     return res.status(200).json({
       message: "request fetched successfully",
@@ -43,6 +47,32 @@ const getRequest = async (req, res) => {
       message: "server side error while getting request by buyer",
     });
   }
+};
+
+const fetchProposals = async (req, res) => {
+  const buyerId = req.user._id;
+  const requests = await requestModel.find({ buyerId });
+  const allProposals = requests.flatMap((request) =>
+    request.proposals.map((proposal) => {
+      return {
+        ...proposal.toObject(),
+        requestId: request._id,
+      };
+    }),
+  );
+
+  allProposals.reverse();
+
+  if (requests.length === 0) {
+    return res.status(200).json({
+      proposals: [],
+    });
+  }
+
+  return res.status(200).json({
+    message: "propsal fetched successfully",
+    proposals: allProposals,
+  });
 };
 
 const acceptProposal = async (req, res) => {
@@ -77,10 +107,14 @@ const acceptProposal = async (req, res) => {
     request.status = "closed";
     await request.save();
 
+    
+    
+
     return res.status(200).json({
       message: "proposal accepted successfully",
       request,
     });
+
   } catch (error) {
     console.log("error while accepting proposal : ", error);
     return res.status(500).json({
@@ -89,4 +123,19 @@ const acceptProposal = async (req, res) => {
   }
 };
 
-module.exports = { request, getRequest, acceptProposal };
+const deleteProposal = async (req, res) => {
+  const request = await requestModel.findById(req.params.requestId);
+  request.proposals = request.proposals.filter(
+    (proposal) => proposal._id.toString() != req.params.proposalId,
+  );
+  await request.save();
+  return res.status(200).json({ message: "proposal delete successfullyy" });
+};
+
+module.exports = {
+  request,
+  getRequest,
+  acceptProposal,
+  fetchProposals,
+  deleteProposal,
+};
