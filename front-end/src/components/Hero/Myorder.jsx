@@ -11,10 +11,13 @@ function Myorder() {
 
   useEffect(() => {
     const myOrder = async () => {
-      const res = await axios.get(`http://localhost:3000/order/my-orders`, {
-        withCredentials: true,
-      });
-      console.log(res.data);
+      const res = await axios.get(
+        `https://custom-dress-marketplace-backend.onrender.com/order/my-orders`,
+        {
+          withCredentials: true,
+        },
+      );
+
       const finalData = [];
 
       for (let order of res.data.orders) {
@@ -28,7 +31,7 @@ function Myorder() {
 
         try {
           const dressData = await axios.get(
-            `http://localhost:3000/dresses/${order.dressId}`,
+            `https://custom-dress-marketplace-backend.onrender.com/dresses/${order.dressId}`,
             { withCredentials: true },
           );
 
@@ -85,7 +88,10 @@ function Myorder() {
 
               <div className="max-w-20 md:max-w-32 pl-1 overflow-x-scroll scrollbar-none md:text-3xl">
                 {item.order.orderType === "customise" ? (
-                  <div className="overflow-x-scroll scrollbar-none max-h-5 md:max-h-10 md:w-80  w-40"> timeline:{item.order.timeline}</div>
+                  <div className="overflow-x-scroll scrollbar-none max-h-5 md:max-h-10 md:w-80  w-40">
+                    {" "}
+                    timeline:{item.order.timeline}
+                  </div>
                 ) : (
                   <div>{item.dress?.title}</div>
                 )}

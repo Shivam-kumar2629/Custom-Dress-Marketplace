@@ -20,18 +20,24 @@ function App() {
   useEffect(() => {
     const checkUser = async () => {
       try {
-        const res = await axios.get("http://localhost:3000/getme", {
-          withCredentials: true,
-        });
+        const res = await axios.get(
+          "https://custom-dress-marketplace-backend.onrender.com/getme",
+          {
+            withCredentials: true,
+          },
+        );
         setUser(res.data.user);
       } catch (error) {
         console.log("getme failed error:", error.response?.status, error);
 
         if (error.response?.status === 401) {
           try {
-            await axios.get("http://localhost:3000/refreshToken", {
-              withCredentials: true,
-            });
+            await axios.get(
+              "https://custom-dress-marketplace-backend.onrender.com/refreshToken",
+              {
+                withCredentials: true,
+              },
+            );
           } catch (error) {
             console.log(
               "error while generating new accessToken:",
@@ -40,9 +46,12 @@ function App() {
             );
           }
           try {
-            const res = await axios.get("http://localhost:3000/getme", {
-              withCredentials: true,
-            });
+            const res = await axios.get(
+              "https://custom-dress-marketplace-backend.onrender.com/getme",
+              {
+                withCredentials: true,
+              },
+            );
             setUser(res.data.user);
           } catch (error) {
             console.log(

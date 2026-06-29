@@ -2,10 +2,10 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import test from "../assets/test.jpg";
 import { FaRegWindowClose } from "react-icons/fa";
-import {useNavigate} from "react-router-dom"
+import { useNavigate } from "react-router-dom";
 
 function Profile({ user }) {
-  const navigate=useNavigate();
+  const navigate = useNavigate();
 
   const [dressdata, setDressData] = useState([]);
   const [formState, setformState] = useState(false);
@@ -33,9 +33,12 @@ function Profile({ user }) {
       if (user.role !== "seller") return;
 
       try {
-        const res = await axios.get("http://localhost:3000/getmydress", {
-          withCredentials: true,
-        });
+        const res = await axios.get(
+          "https://custom-dress-marketplace-backend.onrender.com/getmydress",
+          {
+            withCredentials: true,
+          },
+        );
 
         setDressData(res.data.dresess);
       } catch (error) {
@@ -61,9 +64,13 @@ function Profile({ user }) {
     });
 
     const submitFormData = async () => {
-      const res = await axios.post("http://localhost:3000/dresses", data, {
-        withCredentials: true,
-      });
+      const res = await axios.post(
+        "https://custom-dress-marketplace-backend.onrender.com/dresses",
+        data,
+        {
+          withCredentials: true,
+        },
+      );
 
       setDressData((prev) => [...prev, res.data.dress]);
     };
@@ -80,32 +87,44 @@ function Profile({ user }) {
 
   const openSingleDress = async (id) => {
     setGetSingleState(true);
-    const res = await axios.get(`http://localhost:3000/dresses/${id}`, {
-      withCredentials: true,
-    });
+    const res = await axios.get(
+      `https://custom-dress-marketplace-backend.onrender.com/dresses/${id}`,
+      {
+        withCredentials: true,
+      },
+    );
     setOpenSingleDressOne(res.data.dress);
   };
 
   const deleteSingleDress = async (id) => {
-    await axios.delete(`http://localhost:3000/dresses/${id}`, {
-      withCredentials: true,
-    });
+    await axios.delete(
+      `https://custom-dress-marketplace-backend.onrender.com/dresses/${id}`,
+      {
+        withCredentials: true,
+      },
+    );
     setDressData((prev) => prev.filter((dress) => dress._id !== id));
   };
 
   const fetchRequest = async () => {
     setRequestBox(true);
     if (user.role === "buyer") {
-      const res = await axios.get("http://localhost:3000/request", {
-        withCredentials: true,
-      });
+      const res = await axios.get(
+        "https://custom-dress-marketplace-backend.onrender.com/request",
+        {
+          withCredentials: true,
+        },
+      );
       setFetchedRequests(res.data.request);
     }
 
     if (user.role === "seller") {
-      const res = await axios.get("http://localhost:3000/seller/request", {
-        withCredentials: true,
-      });
+      const res = await axios.get(
+        "https://custom-dress-marketplace-backend.onrender.com/seller/request",
+        {
+          withCredentials: true,
+        },
+      );
       console.log(res.data);
       setFetchedRequests(res.data.requests);
     }
@@ -118,7 +137,7 @@ function Profile({ user }) {
     }
 
     const res = await axios.post(
-      `http://localhost:3000/proposal/${selectedrequestid}`,
+      `https://custom-dress-marketplace-backend.onrender.com/proposal/${selectedrequestid}`,
       {
         price: proposalamount,
         timeline: proposaldeadline,
@@ -134,9 +153,12 @@ function Profile({ user }) {
     setProposalFormState(false);
   };
   const openproposalbox = async () => {
-    const res = await axios.get(`http://localhost:3000/fetchingproposal`, {
-      withCredentials: true,
-    });
+    const res = await axios.get(
+      `https://custom-dress-marketplace-backend.onrender.com/fetchingproposal`,
+      {
+        withCredentials: true,
+      },
+    );
 
     setProposalData(res.data.proposals);
   };
@@ -148,7 +170,7 @@ function Profile({ user }) {
 
     try {
       const res = await axios.delete(
-        `http://localhost:3000/proposal/${proposalId}/${requestId}`,
+        `https://custom-dress-marketplace-backend.onrender.com/proposal/${proposalId}/${requestId}`,
         { withCredentials: true },
       );
 
@@ -165,13 +187,13 @@ function Profile({ user }) {
   const createAutoCustomiseOrder = async (requestId, proposalId) => {
     try {
       await axios.post(
-        `http://localhost:3000/acceptProposal/${requestId}/${proposalId}`,
+        `https://custom-dress-marketplace-backend.onrender.com/acceptProposal/${requestId}/${proposalId}`,
         {},
         { withCredentials: true },
       );
 
       await axios.post(
-        `http://localhost:3000/order/${requestId}/${proposalId}`,
+        `https://custom-dress-marketplace-backend.onrender.com/order/${requestId}/${proposalId}`,
         {},
         { withCredentials: true },
       );

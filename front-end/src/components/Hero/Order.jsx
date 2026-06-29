@@ -12,9 +12,12 @@ function Order() {
 
   useEffect(() => {
     const singleDress = async () => {
-      const res = await axios.get(`http://localhost:3000/dresses/${id}`, {
-        withCredentials: true,
-      });
+      const res = await axios.get(
+        `https://custom-dress-marketplace-backend.onrender.com/dresses/${id}`,
+        {
+          withCredentials: true,
+        },
+      );
       setSingleDress(res.data.dress);
     };
     singleDress();
@@ -22,7 +25,7 @@ function Order() {
 
   const orderPlaced = async () => {
     const res = await axios.post(
-      `http://localhost:3000/order/${id}`,
+      `https://custom-dress-marketplace-backend.onrender.com/order/${id}`,
       {},
       {
         withCredentials: true,

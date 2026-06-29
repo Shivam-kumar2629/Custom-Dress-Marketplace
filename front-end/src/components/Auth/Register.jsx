@@ -11,22 +11,24 @@ function Register() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const res = await axios.post("http://localhost:3000/register", {
-        fullName,
-        email,
-        password,
-        role,
-      });
+      const res = await axios.post(
+        "https://custom-dress-marketplace-backend.onrender.com/register",
+        {
+          fullName,
+          email,
+          password,
+          role,
+        },
+      );
 
       console.log(res.data);
-      if(res.status===200){
-        navigate("/login")
+      if (res.status === 200) {
+        navigate("/login");
       }
     } catch (error) {
       console.log(error);
     }
   };
-
 
   const redirectLogin = () => {
     navigate("/login");

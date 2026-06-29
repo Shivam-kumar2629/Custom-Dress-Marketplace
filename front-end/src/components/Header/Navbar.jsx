@@ -8,7 +8,7 @@ import { IoLogOut } from "react-icons/io5";
 import axios from "axios";
 import { Navigate } from "react-router-dom";
 
-function Navbar({setUser}) {
+function Navbar({ setUser }) {
   const [isMenuOpen, setisMenuOpen] = useState(false);
   const navigate = useNavigate();
   const togglemenu = () => {
@@ -24,15 +24,17 @@ function Navbar({setUser}) {
   };
 
   const logOut = async () => {
-    const res = await axios.post("http://localhost:3000/logOut");
+    const res = await axios.post(
+      "https://custom-dress-marketplace-backend.onrender.com/logOut",
+    );
     console.log(res.data);
     if (res.status === 200) {
-      setUser(null)
+      setUser(null);
       navigate("/login");
     }
   };
   return (
-    <div  >
+    <div>
       <div className="h-10 w-full gap-1 bg-purple-200 flex items-center   md:h-14 justify-between text-xl fixed top-0 left-0   z-50 ">
         <button onClick={togglemenu} className="text-3xl ml-2 md:hidden">
           {isMenuOpen ? <IoClose /> : <IoMenu />}

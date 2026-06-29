@@ -13,11 +13,14 @@ function Product({ user }) {
 
   useEffect(() => {
     const getDress = async () => {
-      const res = await axios.get("http://localhost:3000/dresses", {
-        withCredentials: true,
-      });
+      const res = await axios.get(
+        "https://custom-dress-marketplace-backend.onrender.com/dresses",
+        {
+          withCredentials: true,
+        },
+      );
 
-      setDresess(res.data.dresses);
+      setDresess(res?.data?.dresses);
     };
     getDress();
   }, []);
@@ -29,22 +32,28 @@ function Product({ user }) {
   return (
     <div className="relative">
       <div className="absolute top-10 p-2 text-slate-600 text-xl md:top-14 md:p-5 md:text-3xl ">
-        Hii <span className="text-2xl md:text-5xl italic">{user.fullName} </span> Enjoy
-        Shopping
+        Hii{" "}
+        <span className="text-2xl md:text-5xl italic">{user.fullName} </span>{" "}
+        Enjoy Shopping
       </div>
 
       <div className=" w-full flex  items-center justify-evenly flex-wrap  p-1 pb-10 md:top-36  md:p-5   absolute top-28 ">
-        {dresess.map((dress) => {
+        {dresess?.map((dress) => {
           return (
             <div
-              key={dress._id}
+              key={dress?._id}
               className="flex flex-col justify-start items-center bg-red-300 h-[190px] w-36  rounded-lg p-1 text-lg md:h-60 md:w-60 gap-2 m-1"
             >
-              <img className="h-28 w-full" src={dress.images[0]}></img>
+              <img className="h-28 w-full" src={dress?.images[0]}></img>
 
               <div className="  rounded-md w-full text-center cursor-pointer md:text-xl md:mt-1 flex  justify-between md:p-1 overflow-y-hidden  ">
-                <span className="max-w-16 md:max-w-24 whitespace-nowrap overflow-x-scroll scrollbar-none"> {dress?.category}</span>
-                <span className="max-w-16 md:max-w-24 whitespace-nowrap overflow-x-scroll scrollbar-none">${dress?.price}</span>
+                <span className="max-w-16 md:max-w-24 whitespace-nowrap overflow-x-scroll scrollbar-none">
+                  {" "}
+                  {dress?.category}
+                </span>
+                <span className="max-w-16 md:max-w-24 whitespace-nowrap overflow-x-scroll scrollbar-none">
+                  ${dress?.price}
+                </span>
               </div>
 
               <div
@@ -80,7 +89,7 @@ function Product({ user }) {
 
               <div className="bg-yellow-100 p-1 rounded-xl   max-w-28 max-h-10 overflow-x-auto  scrollbar-none md:text-xl">
                 {" "}
-                <span >$</span> {openDress?.price}
+                <span>$</span> {openDress?.price}
               </div>
             </div>
 

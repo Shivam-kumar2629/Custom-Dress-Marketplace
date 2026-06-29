@@ -1,9 +1,9 @@
 import { useState } from "react";
 import axios from "axios";
-import{useNavigate} from "react-router-dom"
+import { useNavigate } from "react-router-dom";
 
 function Cutomise() {
-  const navigate=useNavigate();
+  const navigate = useNavigate();
   const [request, setRequest] = useState(false);
   const [budget, setBudget] = useState("");
   const [description, setDescription] = useState("");
@@ -23,7 +23,7 @@ function Cutomise() {
 
     const submitFormDate = async () => {
       const res = await axios.post(
-        "http://localhost:3000/request",
+        "https://custom-dress-marketplace-backend.onrender.com/request",
         {
           budget,
           description,
@@ -87,10 +87,14 @@ function Cutomise() {
 
       {request && (
         <div className="bg-blue-100 absolute top-5 px-2 w-full rounded-md left-1/2 -translate-x-1/2 z-50">
-          <div className="mb-5 md:mb-10 md:text-3xl">Request Sent SuccessFully...</div>
+          <div className="mb-5 md:mb-10 md:text-3xl">
+            Request Sent SuccessFully...
+          </div>
           <div className="flex items-center justify-evenly">
-            
-            <button onClick={()=>navigate("/products")} className="m-1 ml-2 cursor-pointer bg-yellow-50 rounded md p-1 md:p-6 md:text-2xl">
+            <button
+              onClick={() => navigate("/products")}
+              className="m-1 ml-2 cursor-pointer bg-yellow-50 rounded md p-1 md:p-6 md:text-2xl"
+            >
               Explore more Dresess
             </button>
           </div>

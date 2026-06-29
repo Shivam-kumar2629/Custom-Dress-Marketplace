@@ -11,7 +11,7 @@ function Login({ setUser }) {
     e.preventDefault();
     try {
       const res = await axios.post(
-        "http://localhost:3000/login",
+        "https://custom-dress-marketplace-backend.onrender.com/login",
         {
           email,
           password,
