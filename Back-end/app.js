@@ -9,7 +9,7 @@ const cors = require("cors");
 const app = express();
 app.use(
   cors({
-    origin: "http://localhost:3001",
+    origin: "https://custom-dress-marketplace.onrender.com",
     credentials: true,
   }),
 );
