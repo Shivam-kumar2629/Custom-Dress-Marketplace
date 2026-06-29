@@ -69,8 +69,18 @@ const login = async (req, res) => {
       process.env.ACCESS_JWT_SECRET,
       { expiresIn: "15m" },
     );
-    res.cookie("refreshToken", refreshToken);
-    res.cookie("accessToken", accessToken);
+
+    res.cookie("refreshToken", refreshToken, {
+      httpOnly: true,
+      secure: true,
+      sameSite: "None",
+    });
+
+    res.cookie("accessToken", accessToken, {
+      httpOnly: true,
+      secure: true,
+      sameSite: "None",
+    });
 
     user.refreshToken = refreshToken;
     await user.save();
