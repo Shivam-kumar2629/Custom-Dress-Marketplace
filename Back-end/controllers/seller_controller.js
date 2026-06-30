@@ -87,8 +87,8 @@ const getMyDress = async (req, res) => {
   });
   if (dresess.length === 0) {
     return res
-      .status(404)
-      .json({ message: "NO dress found for this specific seller" });
+      .status(200)
+      .json({ message: "NO dress found for this specific seller",dresess:[]});
   }
   return res.status(200).json({
     message: "all dresess fetched successfully",
