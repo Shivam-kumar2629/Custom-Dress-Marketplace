@@ -74,13 +74,15 @@ const login = async (req, res) => {
       httpOnly: true,
       secure: true,
       sameSite: "None",
+      path: "/",
     });
 
-    res.cookie("accessToken", accessToken, {
-      httpOnly: true,
-      secure: true,
-      sameSite: "None",
-    });
+   res.cookie("accessToken", accessToken, {
+    httpOnly: true,
+    secure: true,
+    sameSite: "None",
+    path: "/",
+});
 
     user.refreshToken = refreshToken;
     await user.save();
