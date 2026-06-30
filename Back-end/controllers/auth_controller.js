@@ -70,19 +70,15 @@ const login = async (req, res) => {
       { expiresIn: "15m" },
     );
 
-    res.cookie("refreshToken", refreshToken, {
+    const cookieOptions = {
       httpOnly: true,
       secure: true,
-      sameSite: "None",
+      sameSite: "none",
       path: "/",
-    });
+    };
 
-   res.cookie("accessToken", accessToken, {
-    httpOnly: true,
-    secure: true,
-    sameSite: "None",
-    path: "/",
-});
+    res.cookie("refreshToken", refreshToken, cookieOptions);
+    res.cookie("accessToken", accessToken, cookieOptions);
 
     user.refreshToken = refreshToken;
     await user.save();
