@@ -39,7 +39,7 @@ function Cutomise() {
       setDescription("");
       setDeadline("");
 
-      console.log(res.data);
+      
     };
 
     submitFormDate();

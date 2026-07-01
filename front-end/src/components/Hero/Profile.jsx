@@ -1,6 +1,5 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
-import test from "../assets/test.jpg";
 import { FaRegWindowClose } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 

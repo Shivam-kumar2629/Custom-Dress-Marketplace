@@ -1,7 +1,6 @@
 //  title price description category images
 import { useEffect, useState } from "react";
 import axios from "axios";
-import test from "../assets/test.jpg";
 import { useNavigate } from "react-router-dom";
 import Cutomise from "./Cutomise";
 
