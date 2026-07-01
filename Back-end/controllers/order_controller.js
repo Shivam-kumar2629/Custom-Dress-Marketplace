@@ -156,7 +156,7 @@ const sellerOrders = async (req, res) => {
     if (orders.length === 0) {
       return res.status(200).json({
         message: "no orders found",
-        order: [],
+        orders: [],
       });
     }
     return res.status(200).json({
