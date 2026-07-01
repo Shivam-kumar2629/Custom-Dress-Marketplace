@@ -31,7 +31,7 @@ function Order() {
         withCredentials: true,
       },
     );
-    console.log(res.data);
+    
     setOrderStatus(true);
     setSingleDress(null);
 

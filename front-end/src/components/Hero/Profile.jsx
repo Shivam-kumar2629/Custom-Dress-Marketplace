@@ -125,7 +125,7 @@ function Profile({ user }) {
           withCredentials: true,
         },
       );
-      console.log(res.data);
+       
       setFetchedRequests(res.data.requests);
     }
   };
@@ -145,7 +145,7 @@ function Profile({ user }) {
       },
       { withCredentials: true },
     );
-    console.log(res.data.request.proposals);
+     
     setSubmitProposal(res.data.request.proposals);
     setProposalAmount("");
     setProposalDeadline("");

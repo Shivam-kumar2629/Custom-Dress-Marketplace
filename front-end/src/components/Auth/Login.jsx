@@ -26,7 +26,7 @@ function Login({ setUser }) {
         navigate("/");
       }
 
-      console.log(res.data);
+      
     } catch (error) {
       console.log(error);
     }
@@ -62,6 +62,7 @@ function Login({ setUser }) {
           <div className="flex items-center gap-2 md:justify-center">
             <span className="text-xs md:text-lg">Don't have account?</span>
             <button
+             type="button"
               onClick={redirectRegister}
               className="text-md bg-green-100 rounded-md cursor-pointer md:text-xl md:p-1"
             >
